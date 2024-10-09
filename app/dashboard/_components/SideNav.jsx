@@ -52,13 +52,18 @@ function SideNav() {
         </h2>
       ))}
 
-      <div>
+      <div className='flex gap-2 items-center bottom-5 fixed p-2 '>
           <Image src={user?.picture} 
           width={35} 
           height={35}  
           alt="user"
           className='rounded-full'/>
+          <div>
+            <h2 className=' text-sm font-bold'>{user?.given_name} {user?.family_name}</h2>
+            <h2 className='text-xs text-slate-400'>{user?.email}</h2>
+          </div>
       </div>
+
 
     </div>
   )
