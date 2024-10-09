@@ -7,7 +7,7 @@ function dashboard() {
     const { setTheme } = useTheme()
 
     useEffect(()=>{
-        setTheme('system');
+        setTheme('light');
     },[])
   return (
     <div>dashboard</div>
