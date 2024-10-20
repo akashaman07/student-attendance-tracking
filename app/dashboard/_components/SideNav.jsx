@@ -2,6 +2,7 @@
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import { GraduationCap, Hand, LayoutIcon, Settings } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 function SideNav() {
@@ -46,10 +47,12 @@ function SideNav() {
       <hr className='my-5'></hr>
 
       {menuList.map((menu,index)=>(
+        <Link href={menu.path}>
         <h2 className='flex items-center gap-3 text-md p-4 text-slate-500 hover:bg-primary hover:text-white cursor-pointer rounded-lg my-2 '>
           <menu.icon/>
           {menu.name}
         </h2>
+        </Link>
       ))}
 
       <div className='flex gap-2 items-center bottom-5 fixed p-2 '>
