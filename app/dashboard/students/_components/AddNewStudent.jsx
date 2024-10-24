@@ -79,7 +79,7 @@ function AddNewStudent() {
                   )}
                 </div>
 
-                <div className="py-2">
+                <div className=" flex flex-col py-2">
                   <label htmlFor="grade">Grade</label>
                   <select
                     id="grade"
