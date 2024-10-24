@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import GlobalApi from "@/app/_services/GlobalApi";
+import { toast } from "sonner";
 
 function AddNewStudent() {
   const [open, setOpen] = useState(false);
@@ -27,13 +28,16 @@ function AddNewStudent() {
   const onSubmit = async (data) => {
     console.log("FormData", data);
     try {
-      await GlobalApi.CreateNewStudent(data);
-      setOpen(false);
-      setSuccessMessage("New student added successfully!");
-      reset(); // Reset the form after successful submission
+      const resp = await GlobalApi.CreateNewStudent(data);
+      console.log("--", resp);
+      if (resp.data) {
+        setOpen(false);
+        toast("New Student Added !");
+        reset(); // Reset the form fields after successful submission
+      }
     } catch (err) {
-      console.error("Failed to create new student:", err);
-      setError("Failed to create new student. Please try again.");
+      console.error(err);
+      setError("Failed to add student. Please try again.");
     }
   };
 
@@ -79,7 +83,7 @@ function AddNewStudent() {
                   )}
                 </div>
 
-                <div className=" flex flex-col py-2">
+                <div className="flex flex-col py-2">
                   <label htmlFor="grade">Grade</label>
                   <select
                     id="grade"
@@ -130,7 +134,7 @@ function AddNewStudent() {
                 </div>
 
                 <div className="flex gap-3 items-center justify-end mt-5">
-                  <Button onClick={() => setOpen(false)} variant="ghost">
+                  <Button onClick={() => { setOpen(false); reset(); }} variant="ghost">
                     Cancel
                   </Button>
                   <Button type="submit">Save</Button>
