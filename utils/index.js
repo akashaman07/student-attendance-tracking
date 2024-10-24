@@ -10,6 +10,6 @@ const connection = await mysql.createConnection({
 });
 
 // Initialize Drizzle ORM
-const db = drizzle(connection);
+export const db = drizzle(connection);
 
 // Now you can use `db` for database operations.

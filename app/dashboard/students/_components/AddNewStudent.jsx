@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // Import the Input component
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,108 +8,128 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useForm } from "react-hook-form"; // Import react-hook-form
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import GlobalApi from "@/app/_services/GlobalApi";
 
 function AddNewStudent() {
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  // Using react-hook-form
   const {
     register,
     handleSubmit,
-    formState: { errors },
     reset,
+    formState: { errors },
   } = useForm();
 
-  // Submit handler for form
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // Add your save logic here, e.g., sending data to the backend
-    setOpen(false); // Close the dialog after saving
-    reset(); // Reset the form after submission
+  const onSubmit = async (data) => {
+    console.log("FormData", data);
+    try {
+      await GlobalApi.CreateNewStudent(data);
+      setOpen(false);
+      setSuccessMessage("New student added successfully!");
+      reset(); // Reset the form after successful submission
+    } catch (err) {
+      console.error("Failed to create new student:", err);
+      setError("Failed to create new student. Please try again.");
+    }
   };
+
+  // Define grade options with IDs
+  const gradeOptions = [
+    { id: "1", name: "1st Grade" },
+    { id: "2", name: "2nd Grade" },
+    { id: "3", name: "3rd Grade" },
+    { id: "4", name: "4th Grade" },
+    { id: "5", name: "5th Grade" },
+    { id: "6", name: "6th Grade" },
+    { id: "7", name: "7th Grade" },
+    { id: "8", name: "8th Grade" },
+    { id: "9", name: "9th Grade" },
+    { id: "10", name: "10th Grade" },
+    { id: "11", name: "11th Grade" },
+    { id: "12", name: "12th Grade" },
+  ];
 
   return (
     <div>
       <Button onClick={() => setOpen(true)}>+ Add New Student</Button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Student</DialogTitle>
             <DialogDescription>
+              {error && <p className="text-red-500">{error}</p>}
+              {successMessage && (
+                <p className="text-green-500">{successMessage}</p>
+              )}
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="py-2">
-                  <label>Full Name</label>
+                  <label htmlFor="name">Full Name</label>
                   <Input
-                    {...register("fullName", { required: "Full Name is required" })}
-                    placeholder="Ex. MAX PANE"
+                    id="name"
+                    placeholder="Ex. John Carry"
+                    {...register("name", { required: "Name is required" })}
                   />
-                  {errors.fullName && (
-                    <p className="text-red-500 text-sm">
-                      {errors.fullName.message}
-                    </p>
+                  {errors.name && (
+                    <p className="text-red-500">{errors.name.message}</p>
                   )}
                 </div>
 
-                <div className="flex flex-col py-2">
-                  <label>Select Grade</label>
+                <div className="py-2">
+                  <label htmlFor="grade">Grade</label>
                   <select
+                    id="grade"
                     {...register("grade", { required: "Grade is required" })}
-                    className="p-3 border rounded-lg"
                   >
-                    <option value="">Select Grade</option>
-                    <option value="1th">1th</option>
-                    <option value="2th">2th</option>
-                    <option value="3th">3th</option>
-                    <option value="4th">4th</option>
-                    <option value="5th">5th</option>
-                    <option value="6th">6th</option>
-                    <option value="7th">7th</option>
-                    <option value="8th">8th</option>
-                    <option value="9th">9th</option>
-                    <option value="10th">10th</option>
-                    <option value="11th">11th</option>
-                    <option value="12th">12th</option>
-                    
+                    <option value="">Select a grade</option>
+                    {gradeOptions.map(({ id, name }) => (
+                      <option key={id} value={id}>
+                        {name}
+                      </option>
+                    ))}
                   </select>
                   {errors.grade && (
-                    <p className="text-red-500 text-sm">{errors.grade.message}</p>
+                    <p className="text-red-500">{errors.grade.message}</p>
                   )}
                 </div>
 
                 <div className="py-2">
-                  <label>Contact Number</label>
+                  <label htmlFor="contact">Contact Number</label>
                   <Input
-                    type="number" 
-                    {...register("contactNumber", {
-                      required: "Contact number is required",
+                    id="contact"
+                    type="tel"
+                    placeholder="Ex. 9876543210"
+                    {...register("contact", {
+                      required: "Contact Number is required",
                       pattern: {
-                        value: /^[0-9]{10}$/, // Regular expression for 10-digit number
-                        message: "Enter a valid 10-digit contact number",
+                        value: /^\d{10}$/,
+                        message: "Contact Number must be 10 digits.",
                       },
                     })}
-                    placeholder="Ex. 9874563210"
                   />
-                  {errors.contactNumber && (
-                    <p className="text-red-500 text-sm">
-                      {errors.contactNumber.message}
-                    </p>
+                  {errors.contact && (
+                    <p className="text-red-500">{errors.contact.message}</p>
                   )}
                 </div>
-
                 <div className="py-2">
-                  <label>Address</label>
+                  <label htmlFor="address">Address</label>
                   <Input
-                    {...register("address", { required: "Address is required" })}
-                    placeholder="Ex. 525 N Tryon Street, NC"
+                    id="address"
+                    placeholder="Ex. 523 N Tryon Street"
+                    {...register("address", {
+                      required: "Address is required",
+                    })}
                   />
                   {errors.address && (
-                    <p className="text-red-500 text-sm">{errors.address.message}</p>
+                    <p className="text-red-500">{errors.address.message}</p>
                   )}
                 </div>
 
-                <div className="flex gap-3 items-center justify-end mt-6">
+                <div className="flex gap-3 items-center justify-end mt-5">
                   <Button onClick={() => setOpen(false)} variant="ghost">
                     Cancel
                   </Button>
