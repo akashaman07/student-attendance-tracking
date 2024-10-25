@@ -32,7 +32,7 @@ function AddNewStudent() {
       console.log("--", resp);
       if (resp.data) {
         setOpen(false);
-        toast("New Student Added !");
+        toast("New Student Added!");
         reset(); // Reset the form fields after successful submission
       }
     } catch (err) {
@@ -61,7 +61,15 @@ function AddNewStudent() {
     <div>
       <Button onClick={() => setOpen(true)}>+ Add New Student</Button>
 
-      <Dialog open={open}>
+      <Dialog
+        open={open}
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen);
+          if (!isOpen) {
+            reset(); // Reset the form when dialog closes
+          }
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Student</DialogTitle>
@@ -134,7 +142,13 @@ function AddNewStudent() {
                 </div>
 
                 <div className="flex gap-3 items-center justify-end mt-5">
-                  <Button onClick={() => { setOpen(false); reset(); }} variant="ghost">
+                  <Button
+                    onClick={() => {
+                      setOpen(false);
+                      reset(); // Reset the form fields when cancelling
+                    }}
+                    variant="ghost"
+                  >
                     Cancel
                   </Button>
                   <Button type="submit">Save</Button>
